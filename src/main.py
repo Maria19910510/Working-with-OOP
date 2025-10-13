@@ -1,5 +1,6 @@
 class Product:
     """Класс для создания продуктов"""
+
     def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
         self.description = description
@@ -9,9 +10,9 @@ class Product:
 
 class Category:
     """Класс для создания категорий"""
+
     category_count = 0
     total_products = 0
-
 
     def __init__(self, name: str, description: str):
         self.name = name
@@ -19,7 +20,6 @@ class Category:
         self.products = []
         # Увеличиваем количество категорий при создании новой
         Category.category_count += 1
-
 
     def add_product(self, product: Product):
         self.products.append(product)

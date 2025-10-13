@@ -1,5 +1,6 @@
 import pytest
-from src.main import Product, Category
+
+from src.main import Category, Product
 
 
 # Фикстура для сброса счетчиков между тестами
