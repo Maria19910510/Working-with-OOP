@@ -3,54 +3,54 @@ import pytest
 from src.main import Category, Product
 
 
-# Фикстура для сброса счетчиков между тестами
-@pytest.fixture(autouse=True)
-def reset_counters():
-    Category.category_count = 0
-    Category.total_products = 0
-    yield
+@pytest.fixture
+def sample_product():
+    return Product("Мяч", "Поверхностный мяч для игры", 15.99, 10)
+
+
+@pytest.fixture
+def sample_category():
+    return Category("Игрушки", "Детские игрушки")
 
 
 def test_product_initialization():
-    p = Product("Mouse", "Wireless mouse", 25.5, 10)
-    assert p.name == "Mouse"
-    assert p.description == "Wireless mouse"
-    assert p.price == 25.5
-    assert p.quantity == 10
+    product = Product("Карандаш", "Графитный карандаш", 0.99, 100)
+    assert product.name == "Карандаш"
+    assert product.description == "Графитный карандаш"
+    assert product.price == 0.99
+    assert product.quantity == 100
 
 
-def test_category_initialization():
-    c = Category("Electronics", "Electronic devices")
-    assert c.name == "Electronics"
-    assert c.description == "Electronic devices"
-    assert isinstance(c.products, list)
-    assert len(c.products) == 0
+def test_category_initialization_without_products():
+    initial_category_count = Category.category_count
+    initial_total_products = Category.total_products
+
+    cat = Category("Дом", "Товары для дома")
+    assert cat.name == "Дом"
+    assert cat.description == "Товары для дома"
+    assert isinstance(cat.products, list)
+    assert len(cat.products) == 0
+    # Проверка счетчиков
+    assert Category.category_count == initial_category_count + 1
+    assert Category.total_products == initial_total_products
 
 
-def test_category_count_increment():
-    c1 = Category("Books", "Various books")
-    c2 = Category("Clothes", "Men's and women's apparel")
-    assert Category.category_count == 2
+def test_category_initialization_with_products():
+    products = [Product("Мяч", "Поверхностный мяч", 10.0, 5), Product("Ракетка", "Ракетка для тенниса", 20.0, 2)]
+    initial_category_count = Category.category_count
+    initial_total_products = Category.total_products
+
+    cat = Category("Спорт", products=products)
+    assert len(cat.products) == 2
+    # Проверка счетчиков
+    assert Category.category_count == initial_category_count + 1
+    assert Category.total_products == initial_total_products + 2
 
 
 def test_add_product_increases_total_products():
-    c = Category("Gadgets", "Various gadgets")
-    p1 = Product("Smartphone", "Latest model", 699.99, 5)
-    p2 = Product("Tablet", "10 inch display", 299.99, 3)
-    c.add_product(p1)
-    c.add_product(p2)
-    assert len(c.products) == 2
-    assert Category.total_products == 2
-
-
-def test_multiple_categories_and_products():
-    c1 = Category("Furniture", "Home furniture")
-    c2 = Category("Decor", "Home decor accessories")
-    p1 = Product("Sofa", "Comfortable sofa", 500.0, 2)
-    p2 = Product("Vase", "Ceramic vase", 25.0, 4)
-    c1.add_product(p1)
-    c2.add_product(p2)
-    assert Category.category_count == 2
-    assert Category.total_products == 2
-    assert len(c1.products) == 1
-    assert len(c2.products) == 1
+    category = Category("Кухня")
+    initial_total_products = Category.total_products
+    product = Product("Нож", "Нож для приготовления", 5.99, 20)
+    category.add_product(product)
+    assert product in category.products
+    assert Category.total_products == initial_total_products + 1
