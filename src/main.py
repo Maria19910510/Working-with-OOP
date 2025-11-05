@@ -14,7 +14,7 @@ class Product:
     def price(self, new_price):
         if new_price < self._price:
             confirm = input(f"Новая цена {new_price} меньше текущей {self._price}. Продолжить? (y/n): ")
-            if confirm.lower() != 'y':
+            if confirm.lower() != "y":
                 print("Цена не изменена.")
                 return
         if isinstance(new_price, (int, float)) and new_price >= 0:
@@ -26,12 +26,13 @@ class Product:
 class Category:
     """Класс для создания категорий"""
 
-    category_count = 0  # Атрибут класса: количество созданных категорий
-    total_products = 0  # Атрибут класса: общее количество товаров во всех категориях
+    category_count = 0  # Количество созданных категорий
+    total_products = 0  # Общее число товаров во всех категориях
 
     def __init__(self, name):
         self._name = name
         self._products = {}  # ключ: название товара, значение: объект Product с количеством
+        Category.category_count += 1  # Увеличиваем счетчик при создании новой категории
 
     @property
     def name(self):
@@ -49,10 +50,14 @@ class Category:
         if product.name in self._products:
             # Товар уже есть, увеличиваем количество и обновляем цену при необходимости
             existing_product = self._products[product.name]
+            # Обновляем счетчики, если увеличивается количество
             existing_product.quantity += quantity
-            existing_product.price = product.price  # При необходимости можно обновлять цену
+            existing_product.price = product.price
             print(f"Обновлено количество и цена товара '{product.name}': {existing_product.quantity} шт.")
         else:
             # Добавляем новый товар
             product.quantity = quantity
             self._products[product.name] = product
+            # Обновляем общее число товаров
+            Category.total_products += quantity
+            print(f"Добавлен товар '{product.name}', количество: {quantity} шт.")
