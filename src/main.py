@@ -50,7 +50,7 @@ class Category:
         if product.name in self._products:
             # Товар уже есть, увеличиваем количество и обновляем цену при необходимости
             existing_product = self._products[product.name]
-            # Обновляем счетчики, если увеличивается количество
+            # Обновляем счетчики,  если увеличивается количество
             existing_product.quantity += quantity
             existing_product.price = product.price
             print(f"Обновлено количество и цена товара '{product.name}': {existing_product.quantity} шт.")
