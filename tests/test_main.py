@@ -67,6 +67,7 @@ def test_category_add_product_and_products_str():
     assert "Мяч: 4 шт." in output
 
 
+
 def test_category_total_and_count():
     initial_count = Category.category_count
     initial_total = Category.total_products
