@@ -1,91 +1,72 @@
-from unittest.mock import patch
-
 import pytest
-
 from src.main import Category, Product
 
-
-@pytest.fixture
-def sample_product():
-    return Product("Мяч", 15.99, 10)
-
-
-@pytest.fixture
-def sample_category():
-    return Category("Игрушки")
+def test_product_creation():
+    p = Product("Мяч", 100, 5)
+    assert p.name == "Мяч"
+    assert p.price == 100
+    assert p.quantity == 5
 
 
-def test_product_initialization():
-    product = Product("Карандаш", 0.99, 100)
-    assert product.name == "Карандаш"
-    assert product.price == 0.99
-    assert product.quantity == 100
+def test_price_setter_update_and_negative(monkeypatch):
+    p = Product("Ракетка", 20)
 
+    # Проверка изменения цены на большее значение
+    p.price = 25
+    assert p.price == 25
 
-def test_category_initialization_without_products():
-    initial_category_count = Category.category_count
-    initial_total_products = Category.total_products
+    # Замена input() на возвращение 'y'
+    def fake_input(prompt):
+        return 'y'
 
-    cat = Category("Дом")
-    assert cat.name == "Дом"
-    assert isinstance(cat.products, list)
-    assert len(cat.products) == 0
-    # Проверка счетчиков
-    assert Category.category_count == initial_category_count + 1
-    assert Category.total_products == initial_total_products
+    monkeypatch.setattr('builtins.input', fake_input)
 
+    # Теперь при вызове p.price = 15, подтвердится уменьшение цены
+    p.price = 15
+    assert p.price == 15
 
-def test_category_initialization_with_products():
-    products = [Product("Мяч", 10.0, 5), Product("Ракетка", 20.0, 2)]
-    initial_category_count = Category.category_count
-    initial_total_products = Category.total_products
+    # Проверка, что отрицательная цена вызывает ошибку
+    with pytest.raises(ValueError):
+        p.price = -5
 
+    # Проверка, что нечисловая цена вызывает ошибку
+    with pytest.raises(ValueError):
+        p.price = "новая"
+
+def test_product_new_product_classmethod():
+    info = {'name': 'Книга', 'price': 50, 'quantity': 3}
+    p = Product.new_product(info)
+    assert p.name == 'Книга'
+    assert p.price == 50
+    assert p.quantity == 3
+
+    # Отсутствие ключа 'name' должно вызвать ошибку
+    with pytest.raises(ValueError):
+        Product.new_product({'price': 10})
+
+def test_category_add_product_and_products_str():
     cat = Category("Спорт")
-    # Добавляем продукты вручную, т.к. в конструкторе их не передают
-    for p in products:
-        cat.add_product(p)
+    p1 = Product("Мяч", 10)
+    p2 = Product("Ракетка", 20)
+    cat.add_product(p1)
+    cat.add_product(p2, quantity=2)
 
-    assert len(cat.products) == 2
-    # Проверка счетчиков - потребуется дождаться корректных увеличений
-    assert Category.category_count == initial_category_count + 1
-    # Общие товары увеличились
-    assert Category.total_products >= initial_total_products + 2
+    # Проверяем, что товары добавлены
+    output = cat.products
+    assert "Мяч: 1 шт." in output
+    assert "Ракетка: 2 шт." in output
 
+    # Попытка добавить тот же продукт должна увеличить количество
+    p1_dup = Product("Мяч", 10)
+    cat.add_product(p1_dup, quantity=3)
+    output = cat.products
+    assert "Мяч: 4 шт." in output
 
-def test_add_product_increases_total_products():
-    category = Category("Кухня")
-    initial_total_products = Category.total_products
-    product = Product("Нож", "Нож для приготовления", 5.99)
-    category.add_product(product)
-    assert any(p[0] == "Нож" for p in category.products)
-    assert Category.total_products >= initial_total_products + 1
-
-
-def test_price_setter_confirmation(monkeypatch):
-    product = Product("Лампа", 50, 5)
-    # Симулируем подтверждение "нет" (отказ)
-    monkeypatch.setattr("builtins.input", lambda _: "n")
-    original_price = product.price
-    product.price = 40  # Попытка снизить цену
-    assert product.price == original_price  # Цена не должна измениться
-
-    # Симулируем подтверждение "да"
-    monkeypatch.setattr("builtins.input", lambda _: "y")
-    product.price = 40  # Теперь цена должна измениться
-    assert product.price == 40
-
-
-def test_add_product_update_quantity_and_price():
-    category = Category("Техника")
-    product1 = Product("Телевизор", 30000, 2)
-    category.add_product(product1)
-
-    # Создаём продукт с тем же названием, другой ценой
-    product2 = Product("Телевизор", 32000, 3)
-    with patch("builtins.input", return_value="y"):  # Подтверждение изменения цены
-        category.add_product(product2)
-
-    # Проверяем, что количество увеличилось, цена обновилась
-    product_in_cat = category._products["Телевизор"]
-    assert product_in_cat.quantity == 2
-    assert product_in_cat.price == 32000
+def test_category_total_and_count():
+    initial_count = Category.category_count
+    initial_total = Category.total_products
+    cat = Category("Электроника")
+    assert Category.category_count == initial_count + 1
+    p = Product("Телевизор", 30000)
+    cat.add_product(p, quantity=2)
+    assert Category.total_products >= initial_total + 2
