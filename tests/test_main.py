@@ -1,5 +1,7 @@
 import pytest
+
 from src.main import Category, Product
+
 
 def test_product_creation():
     p = Product("Мяч", 100, 5)
@@ -17,9 +19,9 @@ def test_price_setter_update_and_negative(monkeypatch):
 
     # Замена input() на возвращение 'y'
     def fake_input(prompt):
-        return 'y'
+        return "y"
 
-    monkeypatch.setattr('builtins.input', fake_input)
+    monkeypatch.setattr("builtins.input", fake_input)
 
     # Теперь при вызове p.price = 15, подтвердится уменьшение цены
     p.price = 15
@@ -33,16 +35,18 @@ def test_price_setter_update_and_negative(monkeypatch):
     with pytest.raises(ValueError):
         p.price = "новая"
 
+
 def test_product_new_product_classmethod():
-    info = {'name': 'Книга', 'price': 50, 'quantity': 3}
+    info = {"name": "Книга", "price": 50, "quantity": 3}
     p = Product.new_product(info)
-    assert p.name == 'Книга'
+    assert p.name == "Книга"
     assert p.price == 50
     assert p.quantity == 3
 
     # Отсутствие ключа 'name' должно вызвать ошибку
     with pytest.raises(ValueError):
-        Product.new_product({'price': 10})
+        Product.new_product({"price": 10})
+
 
 def test_category_add_product_and_products_str():
     cat = Category("Спорт")
@@ -61,6 +65,7 @@ def test_category_add_product_and_products_str():
     cat.add_product(p1_dup, quantity=3)
     output = cat.products
     assert "Мяч: 4 шт." in output
+
 
 def test_category_total_and_count():
     initial_count = Category.category_count

@@ -22,7 +22,7 @@ class Product:
             raise ValueError("Цена не может быть отрицательной.")
         if new_price < self.__price:
             confirm = input(f"Новая цена {new_price} меньше текущей {self.__price}. Продолжить? (y/n): ")
-            if confirm.lower() != 'y':
+            if confirm.lower() != "y":
                 print("Цена не изменена.")
                 return
         self.__price = new_price
@@ -33,9 +33,9 @@ class Product:
         Создает объект Product из словаря с атрибутами.
         Пример: {'name': 'Apple', 'price': 10, 'quantity': 5}
         """
-        name = product_info.get('name')
-        price = product_info.get('price', 0)
-        quantity = product_info.get('quantity', 0)
+        name = product_info.get("name")
+        price = product_info.get("price", 0)
+        quantity = product_info.get("quantity", 0)
         if name is None:
             raise ValueError("В словаре должен быть ключ 'name'.")
         return cls(name, price, quantity)
