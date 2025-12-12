@@ -1,10 +1,12 @@
 class Product:
     """Класс для создания продуктов"""
 
-    def __init__(self, name, price, quantity=0):
-        self._name = name
-        self.__price = price  # Приватный атрибут цены
-        self.quantity = quantity
+    class Product:
+        def __init__(self, name, description, price, quantity):
+            self.name = name
+            self.description = description
+            self.price = price
+            self.quantity = quantity
 
     @property
     def name(self):

@@ -1,47 +1,36 @@
-# Определение класса Product
-class Product:
-    def __init__(self, name, price):
-        self.name = name
-        self.price = price
-
-# Определение класса Category
-class Category:
-    def __init__(self, name):
-        self.name = name
-        self.products = {}  # словарь для хранения продуктов и их количества
-
-    def add_product(self, product, quantity):
-        if product.name in self.products:
-            self.products[product.name]['quantity'] += quantity
-        else:
-            self.products[product.name] = {'product': product, 'quantity': quantity}
-
-    def show_products(self):
-        print(f"Категория: {self.name}")
-        for p_info in self.products.values():
-            product = p_info['product']
-            quantity = p_info['quantity']
-            print(f"{product.name}: {quantity} шт. по цене {product.price}")
-
-# Основной код, где создаются продукты и категории
-def main():
-    # Создаем категории
-    electronics = Category("Электроника")
-    books = Category("Книги")
-
-    # Создаем продукты
-    smartphone = Product("Смартфон", 29999)
-    laptop = Product("Ноутбук", 59999)
-    roman = Product("Роман", 500)
-
-    # Добавляем продукты в категории
-    electronics.add_product(smartphone, 3)  # добавляем 3 смартфона
-    electronics.add_product(laptop, 2)      # добавляем 2 ноутбука
-    books.add_product(roman, 15)              # добавляем 15 романов
-
-    # Выводим состав категории
-    electronics.show_products()
-    books.show_products()
+from src.category import Category
+from src.product import Product
 
 if __name__ == "__main__":
-    main()
+
+    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
+    product2 = Product("iPhone 15", "512GB, Gray, space", 210000.0, 8)
+    product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
+
+    category1 = Category(
+        "Смартфоны"
+        "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
+        [product1, product2, product3]
+    )
+
+    print(category1.products)
+    product4 = Product("55\" QLED 4K", "Фоновая подсветка", 123000.0, 7)
+    category1.add_product(product4)
+    print(category1.products)
+    print(category1.product_count)
+
+    new_product = Product.new_product(
+    {"name": "Samsung Galaxy S23 Ultra", "description": "256GB, Серый цвет, 200MP камера", "price": 180000.0,
+    "quantity": 5})
+    print(new_product.name)
+    print(new_product.description)
+    print(new_product.price)
+    print(new_product.quantity)
+
+    new_product.price = 800
+    print(new_product.price)
+
+    new_product.price = -100
+    print(new_product.price)
+    new_product.price = 0
+    print(new_product.price)
