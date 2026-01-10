@@ -1,41 +1,65 @@
 class Product:
     """Класс для создания продуктов"""
+    def __init__(self, name: str, description: str, price: float, quantity: int):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.quantity = quantity
 
-    class Product:
-        def __init__(self, name, description, price, quantity):
-            self.name = name
-            self.description = description
-            self.price = price
-            self.quantity = quantity
+    def __str__(self) -> str:
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
+class Category:
+    def __init__(self, name: str, description: str, products: list = None):
+        self.name = name
+        self.description = description
+        self.__products = []
+        if products:
+            for product in products:
+                self.add_product(product)
 
     @property
-    def name(self):
-        return self._name
+    def products(self) -> str:
+        if not self.__products:
+            return ""
+        return "\n".join(str(product) for product in self.__products)
 
     @property
-    def price(self):
-        return self.__price
+    def product_count(self) -> int:
+        return len(self.__products)
 
-    @price.setter
-    def price(self, new_price):
-        if not isinstance(new_price, (int, float)):
-            raise ValueError("Цена должна быть числом.")
-        if new_price < 0:
-            raise ValueError("Цена не может быть отрицательной.")
-        if new_price < self.__price:
-            confirm = input(f"Новая цена {new_price} меньше текущей {self.__price}. Продолжить? (y/n): ")
-            if confirm.lower() != "y":
-                print("Цена не изменена.")
-                return
-        self.__price = new_price
+    def add_product(self, product):
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product.")
+        self.__products.append(product)
 
-    @classmethod
-    def new_product(cls, product_info):
-        """Создает объект Product из словаря с атрибутами.
-        Пример: {'name': 'Apple', 'price': 10, 'quantity': 5}"""
-        name = product_info.get("name")
-        price = product_info.get("price", 0)
-        quantity = product_info.get("quantity", 0)
-        if name is None:
-            raise ValueError("В словаре должен быть ключ 'name'.")
-        return cls(name, price, quantity)
+
+
+if __name__ == "__main__":
+    # Создаём товары
+    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый", 180000.0, 5)
+    product2 = Product("iPhone 15", "512GB, Gray", 210000.0, 8)
+    product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
+
+    # Создаём категорию с товарами
+    category1 = Category(
+        "Смартфоны",
+        "Мобильные устройства для повседневных задач",
+        [product1, product2, product3]
+    )
+
+    # Выводим список товаров через геттер
+    print("Список товаров в категории:")
+    print(category1.products)
+    # Вывод:
+    # Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.
+    # iPhone 15, 210000.0 руб. Остаток: 8 шт.
+    # Xiaomi Redmi Note 11, 31000.0 руб. Остаток: 14 шт.
+
+    # Добавляем новый товар
+    product4 = Product("55\" QLED 4K", "Телевизор с подсветкой", 123000.0, 7)
+    category1.add_product(product4)
+
+    print(f"\nВсего товаров: {category1.product_count}")
+    print("Обновлённый список:")
+    print(category1.products)
