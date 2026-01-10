@@ -1,58 +1,44 @@
-class Product:
-    """Класс для создания продуктов"""
+from category import Category
+from product import Product
 
-    def __init__(self, name, price, quantity=0):
-        self.name = name
-        self._price = price
-        self.quantity = quantity
+if __name__ == "__main__":
+    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
+    product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
+    product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
 
-    @property
-    def price(self):
-        return self._price
+    category1 = Category(
+        "Смартфоны",
+        "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
+        [product1, product2, product3],
+    )
 
-    @price.setter
-    def price(self, new_price):
-        if new_price < self._price:
-            confirm = input(f"Новая цена {new_price} меньше текущей {self._price}. Продолжить? (y/n): ")
-            if confirm.lower() != 'y':
-                print("Цена не изменена.")
-                return
-        if isinstance(new_price, (int, float)) and new_price >= 0:
-            self._price = new_price
-        else:
-            raise ValueError("Цена должна быть неотрицательным числом.")
+    print(category1.products)
 
+    product4 = Product('55" QLED 4K', "Фоновая подсветка", 123000.0, 7)
+    category1.add_product(product4)
+    print(category1.products)
+    print(f"Всего товаров: {category1.product_count}")
 
-class Category:
-    """Класс для создания категорий"""
+    # Используем класс-метод new_product
+    new_product_data = {
+        "name": "Samsung Galaxy S23 Ultra",
+        "description": "256GB, Серый цвет, 200MP камера",
+        "price": 180000.0,
+        "quantity": 5,
+    }
+    new_product = Product.new_product(new_product_data)
 
-    category_count = 0  # Атрибут класса: количество созданных категорий
-    total_products = 0  # Атрибут класса: общее количество товаров во всех категориях
+    print(new_product.name)
+    print(new_product.description)
+    print(new_product.price)
+    print(new_product.quantity)
 
-    def __init__(self, name):
-        self._name = name
-        self._products = {}  # ключ: название товара, значение: объект Product с количеством
+    # Проверка сеттера цены
+    new_product.price = 800
+    print(new_product.price)
 
-    @property
-    def name(self):
-        return self._name
+    new_product.price = -100
+    print(new_product.price)
 
-    @property
-    def products(self):
-        # Возвращаем список товаров с их количеством
-        return [(product.name, product.price, product.quantity) for product in self._products.values()]
-
-    def add_product(self, product, quantity=1):
-        if not isinstance(product, Product):
-            print("Это не объект Product")
-            return
-        if product.name in self._products:
-            # Товар уже есть, увеличиваем количество и обновляем цену при необходимости
-            existing_product = self._products[product.name]
-            existing_product.quantity += quantity
-            existing_product.price = product.price  # При необходимости можно обновлять цену
-            print(f"Обновлено количество и цена товара '{product.name}': {existing_product.quantity} шт.")
-        else:
-            # Добавляем новый товар
-            product.quantity = quantity
-            self._products[product.name] = product
+    new_product.price = 0
+    print(new_product.price)
