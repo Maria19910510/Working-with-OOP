@@ -1,31 +1,30 @@
-from src.product import Product
+from product import Product
 
 
 class Category:
-    """Класс для создания категорий"""
     def __init__(self, name: str, description: str, products: list = None):
         self.name = name
         self.description = description
-        # Приватный атрибут: доступ только внутри класса
-        self.__products = []  # Инициализируем пустой список
-        # Добавляем начальные товары, если они переданы
+        self.__products = []  # Приватный список товаров
+
         if products:
             for product in products:
                 self.add_product(product)
 
-    @property
-    def products(self):
-        """Геттер для доступа к списку товаров (только чтение)"""
-        return self.__products
-
-    @property
-    def product_count(self):
-        """Возвращает количество товаров в категории."""
-        return len(self.__products)
-
     def add_product(self, product):
-        """Метод для добавления товара в категорию.
-        Проверяет, что переданный объект — экземпляр Product"""
+        """Метод для добавления товара в приватный список"""
         if not isinstance(product, Product):
-            raise TypeError("Можно добавлять только объекты класса Product.")
+            raise TypeError("Можно добавлять только объекты класса Product")
         self.__products.append(product)
+
+    @property
+    def products(self) -> str:
+        """Геттер, возвращающий список товаров в виде строк"""
+        if not self.__products:
+            return ""
+        return "\n".join(str(product) for product in self.__products)
+
+    @property
+    def product_count(self) -> int:
+        """Возвращает количество товаров в категории"""
+        return len(self.__products)
