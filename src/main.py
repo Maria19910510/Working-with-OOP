@@ -64,3 +64,4 @@ if __name__ == "__main__":
     print(f"\nВсего товаров: {category1.product_count}")
     print("Обновлённый список:")
     print(category1.products)
+
