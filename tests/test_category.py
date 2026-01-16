@@ -27,7 +27,7 @@ class TestCategory:
         # assert category.product_count == 0
 
     def test_init_with_invalid_products(self):
-        """Тест инициализации с некорректными продуктами (проверка защиты от TypeError)"""
+        """Тест инициализации с некорректными продуктами (проверка защиты от TypeError)."""
         with pytest.raises(TypeError):
             Category("Test Category", "Test description", ["not a product"])
 
